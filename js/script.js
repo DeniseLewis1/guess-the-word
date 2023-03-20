@@ -67,7 +67,45 @@ const makeGuess = function (letter) {
         message.innerText = `You've already guessed that letter, try again!`;
     } else {
         guessedLetters.push(letter);
+        showGuesses();
+        updateWordInProgress(guessedLetters);
     }
     console.log(guessedLetters);
 };
 
+// Display guessed letters
+const showGuesses = function () {
+    guessedLettersList.innerHTML = "";
+    for (let letter of guessedLetters) {
+        let listItem = document.createElement("li");
+        listItem.innerText = letter;
+        guessedLettersList.append(listItem); 
+    }
+};
+
+// Updated word in progress with correct letters
+const updateWordInProgress = function (guessedLetters) {
+    const wordUpper = word.toUpperCase();
+    const wordArray = wordUpper.split("");
+    let showWord = [];
+
+    for (let letter of wordArray) {
+        if (guessedLetters.includes(letter)) {
+            showWord.push(letter);
+        } else {
+            showWord.push("●");
+        }
+    }
+    
+    wordInProgress.innerText = showWord.join("");
+    checkWin();
+};
+
+
+// Check if player won
+const checkWin = function () {
+    if (wordInProgress.innerText === word.toUpperCase()) {
+        message.classList.add("win");
+        message.innerHTML = `<p class="highlight">You guessed correct the word! Congrats!</p>`;
+    }
+};
