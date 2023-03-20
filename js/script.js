@@ -18,7 +18,7 @@ const playAgainButton = document.querySelector(".play-again");
 // Starting word
 let word = "magnolia";
 // Player guesses
-const guessedLetters = [];
+let guessedLetters = [];
 // Number of guesses remaining
 let remainingGuesses = 8;
 
@@ -32,6 +32,7 @@ const getWord = async function () {
     placeholder(word);
 };
 
+// Start game
 getWord();
 
 // Display placeholders
@@ -44,6 +45,7 @@ const placeholder = function (word) {
     wordInProgress.innerText = placeholderLetters.join("");
 };
 
+// Guess button clicked
 guessButton.addEventListener("click", function (e) {
     e.preventDefault();
     const guess = letterInput.value;
@@ -63,7 +65,7 @@ const inputCheck = function (input) {
     if (input === "") {
         message.innerText = `Please enter a letter.`;
     } else if (input.length > 1) {
-        message.innerText = `Please enter only 1 letter.`;
+        message.innerText = `Please enter a single letter.`;
     } else if (!input.match(acceptedLetter)) {
         message.innerText = `Please enter a letter from A to Z.`;
     } else {
@@ -123,7 +125,8 @@ const countRemainingGuesses = function(guess) {
     }
 
     if (remainingGuesses === 0) {
-        message.innerText = `Game over! The word is ${wordUpper}.`;
+        message.innerHTML = `Game over! The word is <span class="highlight">${wordUpper}</span>.`;
+        startOver();
     } else if (remainingGuesses === 1) {
         remainingGuessesSpan.innerText = `${remainingGuesses} guess`;
     } else {
@@ -136,5 +139,29 @@ const checkWin = function () {
     if (wordInProgress.innerText === word.toUpperCase()) {
         message.classList.add("win");
         message.innerHTML = `<p class="highlight">You guessed correct the word! Congrats!</p>`;
+        startOver();
     }
 };
+
+// Start game over
+const startOver = function () {
+    guessButton.classList.add("hide");
+    remainingGuessesElement.classList.add("hide");
+    guessedLettersElement.classList.add("hide");
+    playAgainButton.classList.remove("hide");
+};
+
+// Play Again button clicked
+playAgainButton.addEventListener ("click", function () {
+    message.classList.remove("win");
+    message.innerText = "";
+    guessedLettersElement.innerHTML = "";
+    remainingGuesses = 8;
+    guessedLetters = [];
+    remainingGuessesSpan.innerText = `${remainingGuesses} guesses`;
+    guessButton.classList.remove("hide");
+    remainingGuessesElement.classList.remove("hide");
+    guessedLettersElement.classList.remove("hide");
+    playAgainButton.classList.add("hide");
+    getWord();
+});
